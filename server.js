@@ -31,6 +31,31 @@ app.get("/api/notes", (req, res) => {
   });
 });
 
+app.post("/api/notes", (req, res) => {
+  console.log(req.body);
+
+  const { title, text } = req.body;
+
+  if (req.body) {
+    const newNote = {
+      title,
+      text,
+      // id
+    };
+    fs.readFile("./db/db.json", "utf-8", (err, data) => {
+      if (err) {
+        console.error(err);
+      } else {
+        const oldNotes = JSON.parse(data);
+        oldNotes.push(newNote);
+        fs.writeFile("./db/db.json", JSON.stringify(oldNotes, null, 4), (err) =>
+          err ? console.error(err) : res.json({ message: "New note added" })
+        );
+      }
+    });
+  }
+});
+
 // GET Route for homepage
 app.get("/notes", (req, res) =>
   res.sendFile(path.join(__dirname, "/public/notes.html"))
