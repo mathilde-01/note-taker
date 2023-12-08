@@ -63,27 +63,23 @@ app.post("/api/notes", (req, res) => {
 
 // Delete note
 app.delete("/api/notes/:id", (req, res) => {
-    const id = parseInt(req.params.id);
-  
-    // Use filter to create a new array without the note to be deleted
-    const updatedNotes = dbJson.filter(note => note.id !== id);
-  
-    if (updatedNotes.length < dbJson.length) {
-      // Note was found and removed, update the file and respond
-      fs.writeFile("./db/db.json", JSON.stringify(updatedNotes, null, 4), (err) => {
-        if (err) {
-          console.error(err);
-          res.status(500).send("Internal Server Error");
-        } else {
-          console.log("Your note has been deleted!");
-          res.json(updatedNotes);
-        }
-      });
-    } else {
-      // Note with the specified ID was not found
-      console.log("Note not found.");
-      res.status(404).json({ error: "Note not found" });
-    }
+    let id = req.params.id;
+    let parsedData;
+    fs.readFile("./db/db.json", "utf8", (err, data) => {
+      if (err) {
+        console.error(err);
+      } else {
+        parsedData = JSON.parse(data);
+        const filterData = parsedData.filter((note) => note.id !== id);
+        fs.writeFile("./db/db.json", JSON.stringify(filterData, null, 4), (err) => {
+          if (err) {
+            console.error(err);
+          } else {
+            res.send(`Deleted note with ${req.params.id}`);
+          }
+        });
+      }
+    });
   });
 
 // GET Route for homepage
