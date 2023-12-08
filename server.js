@@ -39,13 +39,13 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
   console.log(req.body);
 
-  const { title, text } = req.body;
+  const { title, text, id } = req.body;
 
   if (req.body) {
     const newNote = {
       title,
       text,
-      // id
+      id,
     };
     fs.readFile("./db/db.json", "utf-8", (err, data) => {
       if (err) {
@@ -63,23 +63,28 @@ app.post("/api/notes", (req, res) => {
 
 // Delete note
 app.delete("/api/notes/:id", (req, res) => {
-    let deletedNote = parseInt(req.params.id);
-    console.log(deletedNote);
-
-    for (let i = 0; i < dbJson.length; i++) {
-        if (deletedNote === dbJson[i].id) {
-            dbJson.splice(i, 1);
-
-            let noteJson = JSON.stringify(dbJson, null, 2);
-            console.log(noteJson);
-            fs.writeFile("./db/db.json", noteJson, function (err) {
-                if (err) throw err;
-                console.log("Your note has been deleted!");
-                res.json(dbJson);
-            });
+    const id = parseInt(req.params.id);
+  
+    // Use filter to create a new array without the note to be deleted
+    const updatedNotes = dbJson.filter(note => note.id !== id);
+  
+    if (updatedNotes.length < dbJson.length) {
+      // Note was found and removed, update the file and respond
+      fs.writeFile("./db/db.json", JSON.stringify(updatedNotes, null, 4), (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Internal Server Error");
+        } else {
+          console.log("Your note has been deleted!");
+          res.json(updatedNotes);
         }
+      });
+    } else {
+      // Note with the specified ID was not found
+      console.log("Note not found.");
+      res.status(404).json({ error: "Note not found" });
     }
-});
+  });
 
 // GET Route for homepage
 app.get("/notes", (req, res) =>
