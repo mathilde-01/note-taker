@@ -15,5 +15,13 @@
     {
         "title": "Title",
         "text": "Text\n"
+    },
+    {
+        "title": "My note",
+        "text": "Text description "
+    },
+    {
+        "title": "Another note",
+        "text": "Test note"
     }
 ]
