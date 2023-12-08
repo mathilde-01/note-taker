@@ -1,31 +1,12 @@
 [
     {
-        "id": "1",
-        "title": "Test Title",
-        "text": "Test text"
-    },
-    {
         "title": "New note",
-        "text": "My text"
+        "text": "Note",
+        "id": "676f45f7-e135-4673-b1ac-0b6907f2e08b"
     },
     {
-        "title": "New note",
-        "text": "My text"
-    },
-    {
-        "title": "Title",
-        "text": "Text\n"
-    },
-    {
-        "title": "My note",
-        "text": "Text description "
-    },
-    {
-        "title": "Another note",
-        "text": "Test note"
-    },
-    {
-        "title": "Delete note",
-        "text": "Note "
+        "title": "Hello World",
+        "text": "This is my note",
+        "id": "162cef9d-52ae-4230-a81f-8b59dce4b109"
     }
 ]

@@ -10,6 +10,9 @@ const path = require("path");
 // file system module import
 const fs = require("fs");
 
+// ID
+const { v4: uuidv4 } = require("uuid");
+
 // app creation with express
 const app = express();
 
@@ -39,7 +42,8 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
   console.log(req.body);
 
-  const { title, text, id } = req.body;
+  const { title, text } = req.body;
+  const id = uuidv4();
 
   if (req.body) {
     const newNote = {
@@ -63,24 +67,28 @@ app.post("/api/notes", (req, res) => {
 
 // Delete note
 app.delete("/api/notes/:id", (req, res) => {
-    let id = req.params.id;
-    let parsedData;
-    fs.readFile("./db/db.json", "utf8", (err, data) => {
-      if (err) {
-        console.error(err);
-      } else {
-        parsedData = JSON.parse(data);
-        const filterData = parsedData.filter((note) => note.id !== id);
-        fs.writeFile("./db/db.json", JSON.stringify(filterData, null, 4), (err) => {
+  let id = req.params.id;
+  let parsedData;
+  fs.readFile("./db/db.json", "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      parsedData = JSON.parse(data);
+      const filterData = parsedData.filter((note) => note.id !== id);
+      fs.writeFile(
+        "./db/db.json",
+        JSON.stringify(filterData, null, 4),
+        (err) => {
           if (err) {
             console.error(err);
           } else {
             res.send(`Deleted note with ${req.params.id}`);
           }
-        });
-      }
-    });
+        }
+      );
+    }
   });
+});
 
 // GET Route for homepage
 app.get("/notes", (req, res) =>
